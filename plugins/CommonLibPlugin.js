@@ -13,7 +13,6 @@ CommonLibPlugin.prototype.apply = function(compiler) {
 
             chunks.forEach(chunk => {
                 var toRemove = []
-
                 chunk.modules.forEach(module => {
                     if (commons.indexOf(module.resource) > -1)  {
                         var library = libraries.find(library => library.module === module)
@@ -29,15 +28,11 @@ CommonLibPlugin.prototype.apply = function(compiler) {
                         } else {
                             library.chunks.push(chunk)
                         }
-
-                        library.dependencies.forEach(module => chunk.removeModule(module))
-                        chunk.removeModule(module)
                     }
                 })
             })
 
             libraries.forEach((library, index) => {
-                console.error('bonjour')
                 chunk = this.addChunk('chunk' + index);
                 chunk.addModule(library.module)
                 chunk.entry = true
@@ -45,8 +40,16 @@ CommonLibPlugin.prototype.apply = function(compiler) {
                     chunk.addModule(dependency)
                 })
             })
-        });
-    });
+
+            chunks.forEach(chunk => {
+                libraries.forEach(library => {
+                    library.dependencies.forEach(module => chunk.removeModule(module))
+                    chunk.removeModule(library.module)
+                })
+            });
+        })
+    })
+
 }
 
 function findLibDependencies(module, dependencies) {
