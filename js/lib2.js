@@ -55,7 +55,9 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(3)
 
 	console.log('lib3.js')
 

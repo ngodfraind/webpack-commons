@@ -33,20 +33,28 @@ CommonLibPlugin.prototype.apply = function(compiler) {
             })
 
             libraries.forEach((library, index) => {
-                chunk = this.addChunk('chunk' + index);
+                var count = index + 1
+                var name = 'lib' + count
+                chunk = this.addChunk(name);
+                chunk.common = true
                 chunk.addModule(library.module)
                 chunk.entry = true
+                chunk.initial = true
                 library.dependencies.forEach(dependency => {
                     chunk.addModule(dependency)
                 })
             })
 
             chunks.forEach(chunk => {
-                libraries.forEach(library => {
-                    library.dependencies.forEach(module => chunk.removeModule(module))
-                    chunk.removeModule(library.module)
-                })
+                if (!chunk.common) {
+                    libraries.forEach(library => {
+                        library.dependencies.forEach(module => chunk.removeModule(module))
+                        chunk.removeModule(library.module)
+                    })
+                }
             });
+
+            console.error(chunks)
         })
     })
 
@@ -58,8 +66,10 @@ function findLibDependencies(module, dependencies) {
 
     module.dependencies.forEach((dependency, idx) => {
         if (dependency.module) {
-            dependencies.push(dependency.module)
-            findLibDependencies(dependency.module, dependencies)
+            if (dependencies.indexOf(dependency.module) === -1) {
+                dependencies.push(dependency.module)
+                findLibDependencies(dependency.module, dependencies)
+            }
         }
     })
 
