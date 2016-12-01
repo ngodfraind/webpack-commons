@@ -49,15 +49,5 @@
 	console.log('b.js')
 
 
-/***/ },
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */
-/***/ function(module, exports) {
-
-	console.log('lib3.js')
-
-
 /***/ }
 /******/ ]);
